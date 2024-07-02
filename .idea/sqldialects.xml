@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/youSebLcheckNums/output/信贷信息/FBCM_CEDIT_APP.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/youSebLcheckNums/output/信贷信息/FB_ACCEPTANCE_BILL_postgres.sql" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="PostgreSQL" />
+  </component>
+</project>

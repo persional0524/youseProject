@@ -6,11 +6,6 @@
 # @Modify Time      @Author    @Version    @Desciption
 # ------------      -------    --------    -----------
 # 2024/6/24 23:29    Lita       1.0         None
-
-# 文件名: compare_csv_excel_columns.py
-
-# 文件名: compare_csv_excel_columns.py
-
 import pandas as pd
 
 
@@ -29,8 +24,9 @@ def compare_csv_excel(csv_file, excel_file):
     csv_data = pd.read_csv(csv_file, usecols=[0])
     csv_first_col = set(csv_data.iloc[:, 0])
 
-    # 读取Excel文件第一个工作表的第一列
+    # 读取Excel文件第一个工作表的第一列，并去掉ODS_前缀
     excel_data = pd.read_excel(excel_file, usecols=[0], engine='openpyxl')
+    excel_data.iloc[:, 0] = excel_data.iloc[:, 0].str.replace('^ODS_', '', regex=True)
     excel_first_col = set(excel_data.iloc[:, 0])
 
     # 找出差异

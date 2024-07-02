@@ -6,42 +6,39 @@
 # @Modify Time      @Author    @Version    @Desciption
 # ------------      -------    --------    -----------
 # 2024/6/24 15:01    Lita       1.0         None
-
 import cx_Oracle
-import logging
+import csv
 
-# 配置日志
-logging.basicConfig(filename='table_counts.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+# 替换为你的Oracle数据库连接信息
+username = 'ysky_sms'
+password = '11111111'
+dsn = '10.63.8.31:1521/ysky'
 
-# 连接到Oracle数据库
-dsn_tns = cx_Oracle.makedsn('10.63.8.31', '1521', service_name='ysky')
-connection = cx_Oracle.connect(user='ysky_sms', password='11111111', dsn=dsn_tns)
+# 建立与Oracle数据库的连接
+connection = cx_Oracle.connect(username, password, dsn)
+cursor = connection.cursor()
 
-try:
-    # 创建一个游标
-    cursor = connection.cursor()
+# 查询所有表名
+cursor.execute("""
+    SELECT table_name
+    FROM user_tables
+""")
+tables = cursor.fetchall()
 
-    # 获取所有表的列表
-    cursor.execute("""
-        SELECT table_name 
-        FROM user_tables
-    """)
-    tables = cursor.fetchall()
+# 打开一个CSV文件，用于写入结果
+with open('table_data_count.csv', mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Table Name', 'Row Count'])
 
-    # 查询每个表的数据量
+    # 查询每个表的数据量大小
     for table in tables:
         table_name = table[0]
-        cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-        count = cursor.fetchone()[0]
+        cursor.execute(f'SELECT COUNT(*) FROM {table_name}')
+        row_count = cursor.fetchone()[0]
+        writer.writerow([table_name, row_count])
 
-        # 打印到控制台
-        print(f"Table: {table_name}, Count: {count}")
+# 关闭数据库连接
+cursor.close()
+connection.close()
 
-        # 记录到日志
-        logging.info(f"Table: {table_name}, Count: {count}")
-
-finally:
-    # 关闭游标和连接
-    cursor.close()
-    connection.close()
+print("Data count has been written to 'table_data_count.csv'")
